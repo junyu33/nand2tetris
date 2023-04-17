@@ -1,0 +1,91 @@
+/**
+This the the implementation of the calculator.
+Also, it provides some useful methods for the calculator, such as str2Int and int2Str.
+*/
+class Calc {
+    field int x, y, z;
+    field String expression;
+
+    constructor Calc init() {
+        let expression = String.new(64);
+        return this;
+    }
+
+    method int str2Int(String msg, int start, int end) {
+        var int i, c, res, n;
+        let i = start;
+        let res = 0;
+        while (i < end) {
+            let c = msg.charAt(i);
+            let n = c - 48;
+            let res = res * 10 + n;
+            let i = i + 1;
+        }
+        return res;
+    }
+
+    method String int2Str(int n) {
+        var int i, c, d, len, tmp, num;
+        var String revRes, res;
+        let i = 0;
+        let num = n;
+        let res = String.new(64);
+        let revRes = String.new(64);
+        while (num > 0) { // convert the number to string from the lower digit to the higher digit
+            let tmp = num / 10;
+            let d = num - (tmp * 10); 
+            // HACK LANGUAGE DOES NOT FOLLOW THE MATH RULES
+            // IT IS CALCULATED AS (num - tmp) * 10 IF WE DO NOT PUT THE PARENTHESES
+            // WASTED AN AFTERNOON ON THIS BUG
+            let c = d + 48;
+
+            do revRes.appendChar(c);
+            let num = num / 10;
+            let i = i + 1;
+        }
+
+        let len = revRes.length();
+        if (len = 0) {
+            do res.appendChar(48);
+            return res;
+        }
+        let i = 0;
+        while (i < len) { // reverse the string
+            let c = revRes.charAt(len - i - 1);
+            do res.appendChar(c);
+            let i = i + 1;
+        }
+        return res;
+    }
+
+    method int calc(String expr) {
+        var int i, len, op, c, pivot;
+        let expression = expr;
+        let i = 0;
+        let len = expression.length();
+        let op = 0;
+        while (i < len) {
+            let c = expression.charAt(i);
+            if (c = 42) { // *
+                let op = 42;
+                let pivot = i;
+            }
+            if (c = 43) { // +
+                let op = 43;
+                let pivot = i;
+            }
+            let i = i + 1;
+        }
+        if (op = 0) { // user only typed numbers
+            return -1;
+        }
+        let x = str2Int(expression, 0, pivot);
+        let y = str2Int(expression, pivot + 1, len);
+        if (op = 42) { // *
+            let z = x * y;
+        } else {
+            let z = x + y;
+        }
+        return z;
+    }
+}

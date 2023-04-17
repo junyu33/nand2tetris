@@ -1,0 +1,25 @@
+/*
+|RAM[8001|RAM[8002|RAM[8003|RAM[8004|RAM[8005|RAM[8006|RAM[8007|RAM[8008|RAM[8009|RAM[8010|RAM[8011|RAM[8012|RAM[8013|RAM[8014|RAM[8015|RAM[8016|
+| 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0 |
+*/
+class Main {
+   function void main() {
+      do Memory.poke(8001, 1);
+      do Memory.poke(8002, 1);
+      do Memory.poke(8003, 0);
+      do Memory.poke(8004, 1);
+      do Memory.poke(8005, 0);
+      do Memory.poke(8006, 1);
+      do Memory.poke(8007, 0);
+      do Memory.poke(8008, 1);
+      do Memory.poke(8009, 1);
+      do Memory.poke(8010, 1);
+      do Memory.poke(8011, 0);
+      do Memory.poke(8012, 1);
+      do Memory.poke(8013, 1);
+      do Memory.poke(8014, 0);
+      do Memory.poke(8015, 1);
+      do Memory.poke(8016, 0);
+      return;
+   }
+}

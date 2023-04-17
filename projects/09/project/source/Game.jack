@@ -1,0 +1,136 @@
+/**
+This the main class of the game.
+The class initialize the game, provides calculator, shows the answer or check user's answer.
+*/
+class Game {
+    field int changes, cnt;
+    field Array ipt, used;
+    field Random gen;
+    field String myseed, message, answer;
+    field Calc expression;
+
+    constructor Game init() {
+        do Output.printString("Input a number from 0 to 65535 to generate seed: ");
+        do Output.println();
+        let myseed = String.new(10);
+        let message = String.new(64);
+        let answer = String.new(10);
+        let gen = Random.new(Keyboard.readInt(myseed));
+        let expression = Calc.init();
+        return this;
+    }
+
+    method void show() {
+        var int i;
+        let i = 0;
+        do Screen.clearScreen();
+        do Output.println();
+        while (i < 10) {
+            do Output.printInt(i); // src
+            do Output.printString(" ");
+            do Output.printInt(ipt[i]); // dest
+            do Output.println();
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method int check() {
+        var int i, myAns, cnt;
+
+        let i = 0;
+        let cnt = 0;
+        do Screen.clearScreen();
+        do Output.printString("Please input the actual meaning of 10 numbers in 10 lines");
+        do Output.println();
+        while (i < 10) {
+            let myAns = Keyboard.readInt(answer);
+            if (myAns = ipt[i]) {
+                let cnt = cnt + 1; // correct
+            }
+            let i = i + 1;
+        }
+        return cnt;   
+    }
+
+    method void start(int chg) {
+        var int i, a, b;
+
+        let i = 0;
+        let cnt = 0;
+        let changes = chg;
+        let ipt = Array.new(10);
+        let used = Array.new(10);
+
+        while (i < 10) {
+            let ipt[i] = i;
+            let used[i] = 0;
+            let i = i + 1;
+        }
+
+        let i = 0;
+        while (i < changes) {
+            let a = gen.randRange(9);
+            let b = gen.randRange(9);
+
+            if (~(a = b)) { // if the src and dest are different
+                if (used[a] = 0) {
+                    let ipt[a] = b;
+                    let used[a] = 1; // avoid one number to be changed twice
+                    let i = i + 1;
+                }
+            }
+        }
+        return;
+    }
+    method void calc(String msg) {
+        var int res, len, i, num;
+        var String resStr;
+        var char replace;
+
+        do Screen.clearScreen();
+        let message = msg;
+        let len = message.length();
+        // do Output.printString(msg);
+
+        let i = 0;
+        while (i < len) {
+            if (message.charAt(i) > 47) {
+                if (message.charAt(i) < 58) { // if the char is a number
+                    let num = message.charAt(i);
+                    let replace = ipt[num - 48] + 48; // replace the number
+                    do message.setCharAt(i, replace);
+                }
+            }
+            let i = i + 1;
+        }
+
+        let res = expression.calc(message);
+        if (res = -1) {
+            do Output.printString("Invalid expression!");
+            do Output.println();
+            return;
+        }
+
+        let resStr = expression.int2Str(res);
+        let len = resStr.length();
+        let i = 0;
+
+        while (i < len) {
+            if (resStr.charAt(i) > 47) {
+                if (resStr.charAt(i) < 58) {
+                    let num = resStr.charAt(i);
+                    let replace = ipt[num - 48] + 48;
+                    do resStr.setCharAt(i, replace);
+                }
+            }
+            let i = i + 1;
+        }
+
+        do Output.printString("The answer is: ");
+        do Output.printString(resStr);
+        do Output.println();
+
+        return;
+    }
+}

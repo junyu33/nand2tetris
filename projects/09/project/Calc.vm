@@ -1,0 +1,228 @@
+function Calc.init 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 64
+call String.new 1
+pop this 3
+push pointer 0
+return
+function Calc.str2Int 4
+push argument 0
+pop pointer 0
+push argument 2
+pop local 0
+push constant 0
+pop local 2
+label WHILE_EXP0
+push local 0
+push argument 3
+lt
+not
+if-goto WHILE_END0
+push argument 1
+push local 0
+call String.charAt 2
+pop local 1
+push local 1
+push constant 48
+sub
+pop local 3
+push local 2
+push constant 10
+call Math.multiply 2
+push local 3
+add
+pop local 2
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 2
+return
+function Calc.int2Str 8
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+push argument 1
+pop local 5
+push constant 64
+call String.new 1
+pop local 7
+push constant 64
+call String.new 1
+pop local 6
+label WHILE_EXP0
+push local 5
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push local 5
+push constant 10
+call Math.divide 2
+pop local 4
+push local 5
+push local 4
+push constant 10
+call Math.multiply 2
+sub
+pop local 2
+push local 2
+push constant 48
+add
+pop local 1
+push local 6
+push local 1
+call String.appendChar 2
+pop temp 0
+push local 5
+push constant 10
+call Math.divide 2
+pop local 5
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 6
+call String.length 1
+pop local 3
+push local 3
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 7
+push constant 48
+call String.appendChar 2
+pop temp 0
+push local 7
+return
+label IF_FALSE0
+push constant 0
+pop local 0
+label WHILE_EXP1
+push local 0
+push local 3
+lt
+not
+if-goto WHILE_END1
+push local 6
+push local 3
+push local 0
+sub
+push constant 1
+sub
+call String.charAt 2
+pop local 1
+push local 7
+push local 1
+call String.appendChar 2
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP1
+label WHILE_END1
+push local 7
+return
+function Calc.calc 5
+push argument 0
+pop pointer 0
+push argument 1
+pop this 3
+push constant 0
+pop local 0
+push this 3
+call String.length 1
+pop local 1
+push constant 0
+pop local 2
+label WHILE_EXP0
+push local 0
+push local 1
+lt
+not
+if-goto WHILE_END0
+push this 3
+push local 0
+call String.charAt 2
+pop local 3
+push local 3
+push constant 42
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 42
+pop local 2
+push local 0
+pop local 4
+label IF_FALSE0
+push local 3
+push constant 43
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 43
+pop local 2
+push local 0
+pop local 4
+label IF_FALSE1
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 2
+push constant 0
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 1
+neg
+return
+label IF_FALSE2
+push pointer 0
+push this 3
+push constant 0
+push local 4
+call Calc.str2Int 4
+pop this 0
+push pointer 0
+push this 3
+push local 4
+push constant 1
+add
+push local 1
+call Calc.str2Int 4
+pop this 1
+push local 2
+push constant 42
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+push this 1
+call Math.multiply 2
+pop this 2
+goto IF_END3
+label IF_FALSE3
+push this 0
+push this 1
+add
+pop this 2
+label IF_END3
+push this 2
+return

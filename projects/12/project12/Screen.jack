@@ -1,0 +1,247 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 256 rows (indexed 0..255, top to bottom)
+ * of 512 pixels each (indexed 0..511, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+    static Array twoToThe;
+    static int color;
+    static boolean flag;
+    /** Initializes the screen. */
+    function void init() {
+        let twoToThe = Array.new(16);
+        let color = 1;
+        return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int i;
+        let i = 0;
+        while (i < 8192) {
+            do Memory.poke(i + 16384, 0);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        if (b) {
+            let color = 1;
+        } else {
+            let color = 0;
+        }
+        return;
+    }
+
+    function int setBit(int x, int i, boolean v) {
+        let twoToThe[0] = 0;
+        let twoToThe[1] = 0;
+        let twoToThe[2] = 0;
+        let twoToThe[3] = 0;
+        let twoToThe[4] = 0;
+        let twoToThe[5] = 0;
+        let twoToThe[6] = 0;
+        let twoToThe[7] = 0;
+        let twoToThe[8] = 0;
+        let twoToThe[9] = 0;
+        let twoToThe[10] = 0;
+        let twoToThe[11] = 0;
+        let twoToThe[12] = 0;
+        let twoToThe[13] = 0;
+        let twoToThe[14] = 0;
+        let twoToThe[15] = 0;
+
+        // if (~flag) {
+        //     let flag = true;
+        //     let color = 1;
+        // }
+
+        if (x < 0) {
+            let twoToThe[15] = 1;
+            let x = x - 32767 - 1;
+        }
+        if (x > 16383) {
+            let twoToThe[14] = 1;
+            let x = x - 16384;
+        }
+        if (x > 8191) {
+            let twoToThe[13] = 1;
+            let x = x - 8192;
+        }
+        if (x > 4095) {
+            let twoToThe[12] = 1;
+            let x = x - 4096;
+        }
+        if (x > 2047) {
+            let twoToThe[11] = 1;
+            let x = x - 2048;
+        }
+        if (x > 1023) {
+            let twoToThe[10] = 1;
+            let x = x - 1024;
+        }
+        if (x > 511) {
+            let twoToThe[9] = 1;
+            let x = x - 512;
+        }
+        if (x > 255) {
+            let twoToThe[8] = 1;
+            let x = x - 256;
+        }
+        if (x > 127) {
+            let twoToThe[7] = 1;
+            let x = x - 128;
+        }
+        if (x > 63) {
+            let twoToThe[6] = 1;
+            let x = x - 64;
+        }
+        if (x > 31) {
+            let twoToThe[5] = 1;
+            let x = x - 32;
+        }
+        if (x > 15) {
+            let twoToThe[4] = 1;
+            let x = x - 16;
+        }
+        if (x > 7) {
+            let twoToThe[3] = 1;
+            let x = x - 8;
+        }
+        if (x > 3) {
+            let twoToThe[2] = 1;
+            let x = x - 4;
+        }
+        if (x > 1) {
+            let twoToThe[1] = 1;
+            let x = x - 2;
+        }
+        if (x > 0) {
+            let twoToThe[0] = 1;
+        }
+        let twoToThe[i] = v;
+        let x = 0;
+        if (twoToThe[0] = 1) {
+            let x = x + 1;
+        }
+        if (twoToThe[1] = 1) {
+            let x = x + 2;
+        }
+        if (twoToThe[2] = 1) {
+            let x = x + 4;
+        }
+        if (twoToThe[3] = 1) {
+            let x = x + 8;
+        }
+        if (twoToThe[4] = 1) {
+            let x = x + 16;
+        }
+        if (twoToThe[5] = 1) {
+            let x = x + 32;
+        }
+        if (twoToThe[6] = 1) {
+            let x = x + 64;
+        }
+        if (twoToThe[7] = 1) {
+            let x = x + 128;
+        }
+        if (twoToThe[8] = 1) {
+            let x = x + 256;
+        }
+        if (twoToThe[9] = 1) {
+            let x = x + 512;
+        }
+        if (twoToThe[10] = 1) {
+            let x = x + 1024;
+        }
+        if (twoToThe[11] = 1) {
+            let x = x + 2048;
+        }
+        if (twoToThe[12] = 1) {
+            let x = x + 4096;
+        }
+        if (twoToThe[13] = 1) {
+            let x = x + 8192;
+        }
+        if (twoToThe[14] = 1) {
+            let x = x + 16384;
+        }
+        if (twoToThe[15] = 1) {
+            let x = x + 32767 + 1;
+        }
+        return x;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int addr, value, q;
+        let addr = (32 * y) + (x / 16);
+        let value = Memory.peek(addr + 16384);
+        let q = x / 16;
+        let value = Screen.setBit(value, x - (q * 16), color);
+        do Memory.poke(addr + 16384, value);
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        var int dx, dy, a, b, diff;
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let a = 0;
+        let b = 0;
+        let diff = 0;
+        while ((a < (dx + 1)) & (b < (dy + 1))) {
+            do Screen.drawPixel(x1 + a, y1 + b);
+            if (diff < 0) {
+                let a = a + 1;
+                let diff = diff + dy;
+            }
+            else {
+                let b = b + 1;
+                let diff = diff - dx;
+            }
+        }
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+        var int i, j;
+        let i = 0;
+        while (i < (x2 - x1 + 1)) {
+            do Screen.drawLine(x1 + i, y1, x1 + i, y2);
+        }
+        return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+        var int i, j;
+        let i = 0;
+        while (i < r) {
+            let j = 0;
+            while (j < r) {
+                if ((i * i) + (j * j) < (r * r + 1)) {
+                    do Screen.drawPixel(x + i, y + j);
+                    do Screen.drawPixel(x - i, y + j);
+                    do Screen.drawPixel(x + i, y - j);
+                    do Screen.drawPixel(x - i, y - j);
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+}

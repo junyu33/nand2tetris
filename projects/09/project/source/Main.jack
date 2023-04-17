@@ -1,0 +1,92 @@
+/**
+This is a simple number guessing game.
+The meanings of some numbers have been changed, enter expressions to find changes.
+This is an adaptation of C++ code.
+For more information, see my blog: https://blog.junyu33.me/2021/08/27/guess.html
+*/
+
+class Main {
+    function void main() {
+        var char input;
+        var Game game; 
+        var int changes, action, end, tries;
+        var String message, expr;
+
+        let game = Game.init();
+        do Output.printString("Welcome to Number Guessing Game!");
+        do Output.println();
+        do Output.printString("the meanings of some numbers have been changed, enter expressions to find changes");
+        do Output.println();
+        do Output.printString("for example, if 2 turns to be 5 and 5 turns to be 2,then 2*2=52");
+        do Output.println();
+        do Output.printString("Are you ready (Y/N)?");
+        do Output.println();
+
+        let input = Keyboard.readChar();
+        do Output.println();
+        let message = String.new(64);
+        let expr = String.new(64);
+
+        while (input = 89) {
+            do Output.printString("OK, let's start!");
+            do Output.println();
+            do Output.printString("input the number of changes from 0 to 10");
+            do Output.println();
+
+            let changes = Keyboard.readInt(message);
+            let action = 0;
+            let end = 0;
+            let tries = 0;
+            do game.start(changes);
+
+            while (end = 0) {
+                let tries = tries + 1;
+                do Output.printString("input the expression, only +, * are allowed");
+                do Output.println();
+
+                let expr = Keyboard.readLine(message);
+                do game.calc(expr);
+
+                do Output.printString("continue(c), quit(q), show(s), or check answer(a)?");
+                do Output.println();
+                let action = Keyboard.readChar();
+                do Output.println();
+                
+                if (action = 81) { // q
+                    do Output.printString("OK, bye!");
+                    do Output.println();
+                    let end = 1;
+                } 
+                if (action = 83) { // s
+                    do game.show();
+                    let end = 1;
+                } 
+                if (action = 65) { // a
+                    if (game.check() = 10) { // if all numbers guessed
+                        do Output.printString("Congrats, you win!");
+                        do Output.println();
+                        do Output.printString("You have tried ");
+                        do Output.printInt(tries);
+                        do Output.printString(" times");
+                        do Output.println();
+                        let end = 1;
+                    }
+                    if (end = 0) {
+                        do Output.printString("Sorry, please try again!");
+                        do Output.println();
+                    }
+                } 
+            }
+
+            do Output.printString("Try again (Y/N)?");
+            do Output.println();
+            let input = Keyboard.readChar();
+            do Output.println();
+            do Screen.clearScreen();
+        } 
+
+        do Output.printString("OK, bye!");
+        do Output.println();
+        return;
+    }
+}

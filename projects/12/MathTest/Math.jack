@@ -1,0 +1,227 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+    static Array twoToThe;
+    /** Initializes the library. */
+    function void init() {
+        let twoToThe = Array.new(16);
+        return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        } 
+        return x;
+    }
+    /** get the ith bit of x */
+    function int getBit(int x, int i) {
+        // using twoToThe[i] to get the ith bit of x
+        let twoToThe[0] = 0;
+        let twoToThe[1] = 0;
+        let twoToThe[2] = 0;
+        let twoToThe[3] = 0;
+        let twoToThe[4] = 0;
+        let twoToThe[5] = 0;
+        let twoToThe[6] = 0;
+        let twoToThe[7] = 0;
+        let twoToThe[8] = 0;
+        let twoToThe[9] = 0;
+        let twoToThe[10] = 0;
+        let twoToThe[11] = 0;
+        let twoToThe[12] = 0;
+        let twoToThe[13] = 0;
+        let twoToThe[14] = 0;
+
+        if (x > 16383) {
+            let twoToThe[14] = 1;
+            let x = x - 16384;
+        }
+        if (x > 8191) {
+            let twoToThe[13] = 1;
+            let x = x - 8192;
+        }
+        if (x > 4095) {
+            let twoToThe[12] = 1;
+            let x = x - 4096;
+        }
+        if (x > 2047) {
+            let twoToThe[11] = 1;
+            let x = x - 2048;
+        }
+        if (x > 1023) {
+            let twoToThe[10] = 1;
+            let x = x - 1024;
+        }
+        if (x > 511) {
+            let twoToThe[9] = 1;
+            let x = x - 512;
+        }
+        if (x > 255) {
+            let twoToThe[8] = 1;
+            let x = x - 256;
+        }
+        if (x > 127) {
+            let twoToThe[7] = 1;
+            let x = x - 128;
+        }
+        if (x > 63) {
+            let twoToThe[6] = 1;
+            let x = x - 64;
+        }
+        if (x > 31) {
+            let twoToThe[5] = 1;
+            let x = x - 32;
+        }
+        if (x > 15) {
+            let twoToThe[4] = 1;
+            let x = x - 16;
+        }
+        if (x > 7) {
+            let twoToThe[3] = 1;
+            let x = x - 8;
+        }
+        if (x > 3) {
+            let twoToThe[2] = 1;
+            let x = x - 4;
+        }
+        if (x > 1) {
+            let twoToThe[1] = 1;
+            let x = x - 2;
+        }
+        if (x > 0) {
+            let twoToThe[0] = 1;
+        }
+        return twoToThe[i];
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int result, i, shiftedX, sign;
+        let result = 0;
+        let i = 0;
+        let shiftedX = x;
+        let sign = 1;
+        if (y < 0) {
+            let y = -y;
+            let sign = -1;
+        }
+        while (i < 16) {
+            if (Math.getBit(y, i) = 1) {
+                let result = result + shiftedX;
+            }
+            let shiftedX = shiftedX + shiftedX;
+            let i = i + 1;
+        }
+        if (sign < 0) {
+            let result = -result;
+        }
+        return result;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+        var int result, i, q, sign;
+        let result = 0;
+        let i = 0;
+        let sign = 1;
+        if (x < 0) {
+            let x = -x;
+            let sign = Math.multiply(sign, -1);
+        } 
+        if (y < 0) {
+            let y = -y;
+            let sign = Math.multiply(sign, -1);
+        }
+        if (y > x) {
+            return 0;
+        }
+        let q = Math.divide(x, 2 * y) * sign;
+        if ((x - (2 * q * y)) < y) {
+            return 2 * q;
+        } 
+        return 2 * q + 1;
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int i;
+        let i = 0;
+        if ((i + 128) * (i + 128) - 1 < x) {
+            if ((i + 128) * (i + 128) - 1 > 0) {
+                let i = i + 128;
+            }
+        }
+        if ((i + 64) * (i + 64) - 1 < x) {
+            if ((i + 64) * (i + 64) - 1 > 0) {
+                let i = i + 64;
+            }
+        }
+        if ((i + 32) * (i + 32) - 1 < x) {
+            if ((i + 32) * (i + 32) - 1 > 0) {
+                let i = i + 32;
+            }
+        }
+        if ((i + 16) * (i + 16) - 1 < x) {
+            if ((i + 16) * (i + 16) - 1 > 0) {
+                let i = i + 16;
+            }
+        }
+        if ((i + 8) * (i + 8) - 1 < x) {
+            if ((i + 8) * (i + 8) - 1 > 0) {
+                let i = i + 8;
+            }
+        }
+        if ((i + 4) * (i + 4) - 1 < x) {
+            if ((i + 4) * (i + 4) - 1 > 0) {
+                let i = i + 4;
+            }
+        }
+        if ((i + 2) * (i + 2) - 1 < x) {
+            if ((i + 2) * (i + 2) - 1 > 0) {
+                let i = i + 2;
+            }
+        }
+        if ((i + 1) * (i + 1) - 1 < x) {
+            if ((i + 1) * (i + 1) - 1 > 0) {
+                let i = i + 1;
+            }
+        }
+        return i;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } 
+        return b;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } 
+        return b;
+    }
+    function int mod(int a, int b) {
+        return a - ((a / b) * b);
+    }
+}
